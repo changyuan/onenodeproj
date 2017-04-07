@@ -8,23 +8,46 @@ const router = express.Router();
 module.exports = router;
 
 
+const products  = [{id:"1",name:"product1",price:"100"},{id:"2",name:"product2",price:"100"}];
+
+
 // router 的get 方法
 router.get('/', (req, res) => {
     res.end('hello world, again!');
 });
 
 
-router.get('/haha',(req,res)=> {
+
+router.get('/product/:id',(req,res,next)=> {
 	// res.send('1232');
-	res.json({a:'123',b:'456'});
+	// res.json({a:'123',b:'456'});
+	if (products.length <= req.params.id || req.params.id < 0) {
+      res.statusCode = 404;
+      return res.send('Error 404: No products found')
+   }
+   if (req.params.id == 0) {
+   		next('route');
+   } else {
+   		res.json(products[req.params.id]);
+  }
+},(req,res,next)=>{
+	res.json({code:"-1",msg:'no data'});
 });
 
-router.put('/haha',(req,res)=> {
-	// res.send('1232');
-	res.json({a:'123',b:'456'});
+router.get('/product/:id',(req,res)=> {
+	res.end('123');
 });
 
-router.post('/haha',(req,res)=> {
+router.post('/product',(req,res)=> {
+	// var pic = req.body('pic');
+	var number = req.param('num');
+    // console.log(number)
+    res.end(number);
+	// res.json({pic:pic,number:number});
+});
+
+
+router.put('/product',(req,res)=> {
 	// res.send('1232');
 	res.json({a:'123',b:'456'});
 });

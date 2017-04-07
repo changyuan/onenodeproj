@@ -35,6 +35,8 @@ const expressLayouts = require('express-ejs-layouts');
 // body 内容解析
 const bodyParser = require('body-parser');
 
+const multer = require('multer'); 
+
 const app = express();
 // 如果设置端口使用环境变量中的，否则为8080
 const port = process.env.PORT || 8080;
@@ -44,6 +46,7 @@ app.set('view engine', 'ejs');
 // 添加到应用
 app.use(expressLayouts);
 
+// app.use(multer()); 
 
 // use body parser 解析body参数
 app.use(bodyParser.urlencoded({ extended: true }));
