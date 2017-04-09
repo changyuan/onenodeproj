@@ -1,21 +1,16 @@
 const express = require('express');
 const path = require('path');
-
+const bodyParser = require('body-parser');
+const multer = require('multer');
 // 使用express的路由
 const router = express.Router();
-
 // 这是用来输出路由的，在服务端用来输出。
 module.exports = router;
-
-
-const products  = [{id:"1",name:"product1",price:"100"},{id:"2",name:"product2",price:"100"}];
-
 
 // router 的get 方法
 router.get('/', (req, res) => {
     res.end('hello world, again!');
 });
-
 
 
 router.get('/product/:id',(req,res,next)=> {
@@ -44,10 +39,25 @@ router.post('/product',(req,res)=> {
     // console.log(number)
     res.end(number);
 	// res.json({pic:pic,number:number});
+
+//修改产品
+router.put('/product', (req, res) => {
+    // res.send('1232');
+    // res.json({a:'123',b:'456'});
+    res.json(req.body);
 });
 
 
-router.put('/product',(req,res)=> {
-	// res.send('1232');
-	res.json({a:'123',b:'456'});
-});
+router.get('/test', (req, res) => {
+	res.json({
+        a: '123',
+        b: '456'
+    });
+    var db = require('mongoskin').db('localhost:27017/test');
+    db.collection('my_score_col').find().toArray(function(err, result) {
+        // if (err) throw err;
+        // console.log(result);
+        res.end(result);
+    });
+    
+})

@@ -32,6 +32,11 @@ server.listen(port, hostname, () => {
 const express = require('express');
 // express ejs 的布局模板
 const expressLayouts = require('express-ejs-layouts');
+
+const logger = require('morgan');
+
+const cookieParser = require('cookie-parser');
+
 // body 内容解析
 const bodyParser = require('body-parser');
 
@@ -47,6 +52,14 @@ app.set('view engine', 'ejs');
 app.use(expressLayouts);
 
 // app.use(multer()); 
+//加载日志中间件。
+app.use(logger('dev'));
+
+// 加载解析json的中间件
+app.use(bodyParser.json());
+
+// 加载解析cookie的中间件
+app.use(cookieParser());
 
 // use body parser 解析body参数
 app.use(bodyParser.urlencoded({ extended: true }));
@@ -63,6 +76,37 @@ app.use('/api', api);
 // static css img 静态资源
 app.use(express.static(`${__dirname}/public`));
 
+// 404 
+app.use(function(req, res, next) {
+    var err = new Error('Not Found');
+    err.status = 404;
+    next(err);
+});
+
+console.log(app.get('env'));
+
+//development
+if (app.get('env') === 'development') {
+    app.use(function(err, req, res, next) {
+        res.status(err.status || 500);
+        res.render('error', {
+            message: err.message,
+            error: err
+        });
+    });
+}
+
+// production error handler
+// no stacktraces leaked to user
+if (app.get('env') == 'production') {
+	app.use(function(err, req, res, next) {
+	    res.status(err.status || 500);
+	    res.render('error', {
+	        message: err.message,
+	        error: {}
+	    });
+	});
+}
 
 // 监听端口，并提示应用启动提示
 app.listen(port, () => {
