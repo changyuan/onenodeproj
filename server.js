@@ -46,13 +46,17 @@ const app = express();
 // 如果设置端口使用环境变量中的，否则为8080
 const port = process.env.PORT || 8080;
 
+
+// 设置模板目录
+app.set('views',`${__dirname}/views`);
+
 // 设置模板引擎 ejs
 app.set('view engine', 'ejs');
 // 添加到应用
 app.use(expressLayouts);
 
 // app.use(multer()); 
-//加载日志中间件。
+//加载日志中间件。开发环境下使用，在终端显示简单的不同颜色的日志
 app.use(logger('dev'));
 
 // 加载解析json的中间件
@@ -73,6 +77,10 @@ const api = require('./app/api');
 
 app.use('/api', api);
 
+const index = require('./app/index');
+
+app.use('/m', index);
+
 // static css img 静态资源
 app.use(express.static(`${__dirname}/public`));
 
@@ -86,27 +94,27 @@ app.use(function(req, res, next) {
 console.log(app.get('env'));
 
 //development
-if (app.get('env') === 'development') {
-    app.use(function(err, req, res, next) {
-        res.status(err.status || 500);
-        res.render('error', {
-            message: err.message,
-            error: err
-        });
-    });
-}
+// if (app.get('env') === 'development') {
+//     app.use(function(err, req, res, next) {
+//         res.status(err.status || 500);
+//         res.render('error', {
+//             message: err.message,
+//             error: err
+//         });
+//     });
+// }
 
 // production error handler
 // no stacktraces leaked to user
-if (app.get('env') == 'production') {
-	app.use(function(err, req, res, next) {
-	    res.status(err.status || 500);
-	    res.render('error', {
-	        message: err.message,
-	        error: {}
-	    });
-	});
-}
+// if (app.get('env') == 'production') {
+// 	app.use(function(err, req, res, next) {
+// 	    res.status(err.status || 500);
+// 	    res.render('error', {
+// 	        message: err.message,
+// 	        error: {}
+// 	    });
+// 	});
+// }
 
 // 监听端口，并提示应用启动提示
 app.listen(port, () => {

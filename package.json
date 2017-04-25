@@ -5,6 +5,7 @@
   "main": "server.js",
   "dependencies": {
     "body-parser": "^1.15.2",
+    "cookie-parser": "^1.4.3",
     "ejs": "^2.5.3",
     "express": "^4.14.0",
     "express-ejs-layouts": "^2.2.0",
@@ -12,9 +13,12 @@
     "nodemon": "^1.11.0"
   },
   "devDependencies": {
+    "connect-flash": "^0.1.1",
+    "connect-mongo": "^1.3.2",
     "eslint": "^3.11.1",
     "eslint-config-airbnb-base": "^10.0.1",
-    "eslint-plugin-import": "^2.2.0"
+    "eslint-plugin-import": "^2.2.0",
+    "mongodb": "^2.2.25"
   },
   "scripts": {
     "server": "json-server db.json",
