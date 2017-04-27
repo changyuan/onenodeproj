@@ -1,5 +1,8 @@
 const express = require('express');
 const path = require('path');
+
+const fs = require("fs");
+
 // 使用express的路由
 const router = express.Router();
 // 这是用来输出路由的，在服务端用来输出。
@@ -45,4 +48,40 @@ router.get('/contact', (req, res) => {
 // 在请求过来之后，怎样获得数据。
 router.post('/contact', (req, res) => {
     res.send(`Thanks for contacting us, ${req.body.name}! We will respond shortly!`);
+});
+
+
+//上传
+router.get('/upload',(req,res) => {
+
+    res.render('pages/upload');
+});
+
+router.post('/upload',(req,res) => {
+
+   // 上传的文件信息
+   console.log(req.files);
+
+ 
+   // var des_file =  "/public/upload/" + req.files[0].originalname;
+   // var des_file =  __dirname + '/' + req.files[0].originalname;
+   var des_file =  __dirname + '/../public/upload/' + Math.random();
+   console.log(des_file);
+
+   fs.readFile( req.files[0].path, function (err, data) {
+        fs.writeFile(des_file, data, function (err) {
+         if( err ){
+              console.log( err );
+         }else{
+               response = {
+                   message:'File uploaded successfully', 
+                   filename:req.files[0].originalname
+              };
+          }
+          console.log( response );
+          res.end( JSON.stringify( response ) );
+       });
+   });
+
+
 });

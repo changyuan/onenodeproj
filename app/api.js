@@ -61,4 +61,10 @@ router.get('/test', (req, res) => {
         // console.log(result);
         res.end(result);
     });
-})
+});
+
+
+router.get('/cookie',(req,res)=>{
+    console.log("Cookies: ", req.cookies);
+    res.end(req.cookies.bdshare_firstime);
+});

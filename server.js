@@ -68,6 +68,9 @@ app.use(cookieParser());
 // use body parser 解析body参数
 app.use(bodyParser.urlencoded({ extended: true }));
 
+
+app.use(multer({ dest: '/public/upload/'}).array('image'));
+
 // 加载自己的路由，用来分开url不同的请求
 const router = require('./app/routes');
 // 路由加载到应用
