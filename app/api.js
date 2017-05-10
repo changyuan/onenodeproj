@@ -5,7 +5,17 @@ const multer = require('multer');
 // 使用express的路由
 const router = express.Router();
 // 这是用来输出路由的，在服务端用来输出。
+
+const mongoose = require('mongoose');
+
+const db_connect = require('../config/mongo');
+
+db_connect.connect();
+
+var Product = require('../models/product');
+
 module.exports = router;
+
 
 
 // router 的get 方法
@@ -13,17 +23,27 @@ router.get('/', (req, res) => {
     res.end('hello world, again!');
 });
 
-router.get('/product/:id', (req, res, next) => {
-    // res.send('1232');
-    // res.json({a:'123',b:'456'});
-    if (products.length <= req.params.id || req.params.id < 0) {
-        res.statusCode = 404;
-        return res.send('Error 404: No products found')
-    }
-    if (req.params.id == 0) {
+router.get('/products', (req, res) => {
+
+    
+    Product.find((err,doc)=>{
+        if (err) {throw err;}
+
+        res.json(doc);
+    });
+
+});
+
+router.get('/product/:name', (req, res, next) => {
+
+    if (req.params.name == "") {
         next('route');
     } else {
-        res.json(products[req.params.id]);
+        Product.find({ name: req.params.name }, function(err, p) {
+          if (err) throw err;
+
+          res.json(p);
+        });
     }
 }, (req, res, next) => {
     res.json({
@@ -33,34 +53,87 @@ router.get('/product/:id', (req, res, next) => {
 });
 
 
-router.get('/product/:id', (req, res) => {
-    res.end('123');
-});
-
-
 router.post('/product', (req, res) => {
-    // var pic = req.body('pic');
-    var number = req.param('num');
-    // console.log(number)
-    res.end(number);
-    // res.json({pic:pic,number:number});
+
+   var model = new Product({
+        'name':req.body.name,
+        'image':'http://pic.service.yaolan.com/32/20170413/80/1492073368656_1_w180_h300_o.jpg',
+        'summary': req.body.summary,
+        'price': req.body.price,
+        'number': req.body.number,
+    });
+
+   model.dudify((err, name)=>{
+        if (err) throw err;
+
+        console.log('goods new name is ' + name);
+   });
+
+   model.save(function(err) {
+      if (err) throw err;
+
+       res.json({code:1,msg:'success'});
+    });
+
 });
+
+
 
 //修改产品
 router.put('/product', (req, res) => {
-    // res.send('1232');
-    // res.json({a:'123',b:'456'});
-    res.json(req.body);
+
+
+    Product.find({ name: req.body.name }, function(err, item) {
+      if (err) throw err;
+      // console.log(item);
+      // item.name = item.name + "商品";
+
+      // save the user
+      item.save(function(err) {
+        if (err) throw err;
+
+        res.json(item);
+      });
+
+    });
 });
 
 
-router.get('/test', (req, res) => {
-    var db = require('mongoskin').db('localhost:27017/test');
-    db.collection('my_score_col').find().toArray(function(err, result) {
-        // if (err) throw err;
-        // console.log(result);
-        res.end(result);
+router.delete('/product', (req, res) => {
+
+    Product.find({ name: req.body.name }, function(err, item) {
+      if (err) throw err;
+
+      item.remove(function(err) {
+        if (err) throw err;
+
+        res.json({
+            code:1,
+            msg:'success'
+        });
+      });
+
     });
+
+
+    //方法2
+    // Product.findOneAndRemove({ name: req.params.name }, function(err) {
+    //   if (err) throw err;
+
+    //     res.json({
+    //         code:1,
+    //         msg:'success'
+    //     });
+    // });
+
+
+    // 方法3
+    // User.findByIdAndRemove(4, function(err) {
+    //   if (err) throw err;
+
+    //   console.log('User deleted!');
+    // });
+
 });
 
 

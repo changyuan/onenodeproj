@@ -99,40 +99,39 @@ router.post('/upload',(req,res) => {
 });
 
 
-router.get('/liveList',(req,res)=> {
+router.get('/livelist',(req,res)=> {
 
    const options = {
       hostname: 'testopen.api.yaolan.com',
       port: 80,
       path: '/api/live/fetchlist',
-      method: 'GET',
+      // method: 'POST',
       headers: {
-        'Content-Type': 'application/x-www-form-urlencoded',
-        'Content-Length': 1024
+        'Content-Type': 'application/x-www-form-urlencoded'
+        // 'Content-Length': Buffer.byteLength(postData)
       }
     };
 
-    var result = http.request(options,(res1)=> {
+    // var result = '';
+    var req1 = http.request(options,(res1)=> {
         console.log(`STATUS: ${res1.statusCode}`);
         console.log(`HEADERS: ${JSON.stringify(res1.headers)}`);
-        res1.setEncoding('utf8');  
+        // res1.setEncoding('utf8');  
+
         res1.on('data', (chunk) => {
-            var chunk = JSON.parse(chunk);
-            res.render('pages/test', {
-                data: chunk.data
-            });
+            res.end(chunk);
         });
     });
 
-    result.on('error', function (e) {  
+    req1.on('error', function (e) {  
         console.log('problem with request: ' + e.message);  
     });  
       
-    result.end(); 
+    req1.end(); 
 });
 
 
-router.post('/viewcount',(req1,res)=>{
+router.get('/viewcount',(req1,res1)=>{
     const postData = qs.stringify({
       'roomid': 17
     });
@@ -155,6 +154,7 @@ router.post('/viewcount',(req1,res)=>{
       res.setEncoding('utf8');
       res.on('data', (chunk) => {
         console.log(`BODY: ${chunk}`);
+        res1.end(chunk);
       });
       res.on('end', () => {
         console.log('No more data in response.');
