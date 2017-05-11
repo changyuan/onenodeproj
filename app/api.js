@@ -82,49 +82,73 @@ router.post('/product', (req, res) => {
 //修改产品
 router.put('/product', (req, res) => {
 
+    //-------------one
+    // Product.findById(1, function(err, item) {
+    //   if (err) throw err;
+    //   // console.log(item);
+    //   // item.name = item.name + "商品";
 
-    Product.find({ name: req.body.name }, function(err, item) {
+    //   // save the user
+    //   item.save(function(err) {
+    //     if (err) throw err;
+
+    //     res.json(item);
+    //   });
+
+    // });
+
+    //-------------two
+    // find the user starlord55
+    // update him to starlord 88
+    Product.findOneAndUpdate({ name: req.body.name }, { name: req.body.name1 }, function(err, item) {
       if (err) throw err;
+
+      // we have the updated user returned to us
       // console.log(item);
-      // item.name = item.name + "商品";
-
-      // save the user
-      item.save(function(err) {
-        if (err) throw err;
-
-        res.json(item);
-      });
-
+      item.summary = "hhaha";
+      item.name = req.body.name1;
+      res.json(item);
     });
+    
+
+    //-------------three
+    //5912dcc7c855a806a4928d42
+    // console.log(req.body);
+    // Product.findByIdAndUpdate(req.body.id, { name: req.body.name }, function(err, item) {
+    //   if (err) throw err;
+
+    //   // we have the updated user returned to us
+    //     res.json(item);
+    // });
 });
 
 
 router.delete('/product', (req, res) => {
-
-    Product.find({ name: req.body.name }, function(err, item) {
-      if (err) throw err;
-
-      item.remove(function(err) {
-        if (err) throw err;
-
-        res.json({
-            code:1,
-            msg:'success'
-        });
-      });
-
-    });
-
-
-    //方法2
-    // Product.findOneAndRemove({ name: req.params.name }, function(err) {
+    console.log(req.body.name);
+    // Product.find({ name: req.body.name }, function(err, item) {
     //   if (err) throw err;
+    //   console.log(item);
+    //   item.remove(function(err) {
+    //     if (err) throw err;
 
     //     res.json({
     //         code:1,
     //         msg:'success'
     //     });
+    //   });
+
     // });
+
+
+    //方法2
+    Product.findOneAndRemove({ name: req.body.name }, function(err) {
+      if (err) throw err;
+
+        res.json({
+            code:1,
+            msg:'success'
+        });
+    });
 
 
     // 方法3
